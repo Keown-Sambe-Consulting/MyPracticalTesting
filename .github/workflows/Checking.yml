@@ -22,7 +22,7 @@ jobs:
         run: |
           sqlfluff fix DatabaseAdministration/Testing_workflow --dialect mysql
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@github.com"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add DatabaseAdministration/Testing_workflow/*.sql
           git commit -m "Auto-fix SQL formatting issues with SQLFluff" || echo "No changes to commit"
           git push 
