@@ -1,0 +1,29 @@
+name: SQL Linting  # 🏷️ SQL Linting and Auto-Fix Workflow
+
+on:
+  push:  # 🔄 Runs when code is pushed to the repository.
+  pull_request:  # 🔄 Runs on pull request updates.
+
+jobs:
+  sql-lint:
+    runs-on: ubuntu-latest  # 💻 Uses Ubuntu as the runner.
+
+    steps:
+      - name: Checkout repository  # 📥 Fetch latest code
+        uses: actions/checkout@v4
+
+      - name: Install SQLFluff  # 📌 Install SQLFluff for linting
+        run: pip install sqlfluff
+
+      - name: Lint SQL files  # 🔍 Run SQL linting
+        run: sqlfluff lint DatabaseAdministration/Testing_workflow --dialect mysql
+
+      - name: Auto-fix SQL files if issues are found  # 🔧 Auto-fix lint errors
+        run: |
+          sqlfluff fix DatabaseAdministration/Testing_workflow --dialect mysql
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add DatabaseAdministration/Testing_workflow/*.sql
+          git commit -m "Auto-fix SQL formatting issues with SQLFluff" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GH_PAT }}@github.com/${{ github.repository }}.git HEAD:main
+        # ✅ Uses GitHub PAT to push changes to the repository
